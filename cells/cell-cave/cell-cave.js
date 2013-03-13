@@ -19,8 +19,9 @@
       this.grid = grid;
       this.x = x;
       this.y = y;
+      this.currentStep = 1;
       this.fixed = false;
-      this.type = Math.random() <= 0.45 ? "wall" : "empty";
+      this.type = Math.random() <= 0.4 ? "wall" : "empty";
     }
 
     Cell.prototype.fixAsWall = function() {
@@ -29,10 +30,22 @@
     };
 
     Cell.prototype.computeStep = function() {
+      var numberOfWalls, _ref, _ref1;
       if (this.fixed) {
         return;
       }
-      return this.nextType = this.type === "wall" && this.grid.neighboursOfType(this, "wall").length >= 4 ? "wall" : this.type === "empty" && this.grid.neighboursOfType(this, "wall").length >= 5 ? "wall" : "empty";
+      numberOfWalls = this.grid.neighboursOfType(this, "wall").length;
+      if (this.type === "wall") {
+        numberOfWalls += 1;
+      }
+      if ((1 <= (_ref = this.currentStep) && _ref <= 4)) {
+        this.nextType = numberOfWalls >= 5 || numberOfWalls === 0 ? "wall" : "empty";
+      } else if ((5 <= (_ref1 = this.currentStep) && _ref1 <= 7)) {
+        this.nextType = numberOfWalls >= 5 ? "wall" : "empty";
+      } else {
+        this.isFinished = true;
+      }
+      return ++this.currentStep;
     };
 
     Cell.prototype.finishStep = function() {
@@ -120,10 +133,16 @@
 
     Grid.prototype.step = function() {
       var x, y, _i, _j, _k, _ref, _ref1, _ref2, _results;
-      for (y = _i = 0, _ref = this.height; 0 <= _ref ? _i < _ref : _i > _ref; y = 0 <= _ref ? ++_i : --_i) {
-        for (x = _j = 0, _ref1 = this.width; 0 <= _ref1 ? _j < _ref1 : _j > _ref1; x = 0 <= _ref1 ? ++_j : --_j) {
+      for (x = _i = 0, _ref = this.width; 0 <= _ref ? _i < _ref : _i > _ref; x = 0 <= _ref ? ++_i : --_i) {
+        for (y = _j = 0, _ref1 = this.height; 0 <= _ref1 ? _j < _ref1 : _j > _ref1; y = 0 <= _ref1 ? ++_j : --_j) {
           this.cells[x][y].computeStep();
+          if (this.cells[x][y].isFinished) {
+            this.isFinished = true;
+          }
         }
+      }
+      if (this.isFinished) {
+        return;
       }
       _results = [];
       for (y = _k = 0, _ref2 = this.height; 0 <= _ref2 ? _k < _ref2 : _k > _ref2; y = 0 <= _ref2 ? ++_k : --_k) {
@@ -135,6 +154,15 @@
           }
           return _results1;
         }).call(this));
+      }
+      return _results;
+    };
+
+    Grid.prototype.stepUntilComplete = function() {
+      var _results;
+      _results = [];
+      while (!this.isFinished) {
+        _results.push(this.step());
       }
       return _results;
     };
@@ -160,16 +188,14 @@
   })();
 
   $(function() {
-    var $canvas, context, grid, i, _i;
+    var $canvas, context, grid;
     $canvas = $("<canvas width=\"" + WIDTH + "\" height=\"" + HEIGHT + "\"></canvas>");
     $("body").append($canvas);
     context = $canvas[0].getContext("2d");
     context.fillStyle = "black";
     context.fillRect(0, 0, WIDTH, HEIGHT);
     grid = new Grid;
-    for (i = _i = 1; _i <= 5; i = ++_i) {
-      grid.step();
-    }
+    grid.stepUntilComplete();
     return grid.draw(context);
   });
 

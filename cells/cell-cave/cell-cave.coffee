@@ -9,9 +9,10 @@ TYPE_COLORS =
 
 class Cell
 	constructor: (@grid, @x, @y) ->
+		@currentStep = 1
 		@fixed = false
 		@type =
-			if Math.random() <= 0.45
+			if Math.random() <= 0.4
 				"wall"
 			else
 				"empty"
@@ -22,13 +23,28 @@ class Cell
 
 	computeStep: ->
 		return if @fixed
-		@nextType =
-			if @type is "wall" and @grid.neighboursOfType(this, "wall").length >= 4
-				"wall"
-			else if @type is "empty" and @grid.neighboursOfType(this, "wall").length >= 5
-				"wall"
-			else
-				"empty"
+
+		numberOfWalls = @grid.neighboursOfType(this, "wall").length
+		numberOfWalls += 1 if @type is "wall"
+
+		if 1 <= @currentStep <= 4
+			@nextType =
+				if numberOfWalls >= 5 or numberOfWalls == 0
+					"wall"
+				else
+					"empty"
+
+		else if 5 <= @currentStep <= 7
+			@nextType =
+				if numberOfWalls >= 5
+					"wall"
+				else
+					"empty"
+
+		else
+			@isFinished = true
+
+		++@currentStep
 
 	finishStep: ->
 		return if @fixed
@@ -55,6 +71,7 @@ class Grid
 		for x in [0, @width-1]
 			for y in [0..@height-1]
 				@cells[x][y].fixAsWall()
+
 		for y in [0, @height-1]
 			for x in [0..@width-1]
 				@cells[x][y].fixAsWall()
@@ -72,8 +89,19 @@ class Grid
 		(neighbour for neighbour in @neighbours cell when neighbour.type is type)
 
 	step: ->
-		@cells[x][y].computeStep() for x in [0...@width] for y in [0...@height]
+		for x in [0...@width]
+			for y in [0...@height]
+				@cells[x][y].computeStep()
+				if @cells[x][y].isFinished
+					@isFinished = true
+
+		return if @isFinished
+
 		@cells[x][y].finishStep() for x in [0...@width] for y in [0...@height]
+
+	stepUntilComplete: ->
+		until @isFinished
+			@step()
 
 	draw: (context) ->
 		@cells[x][y].draw context for y in [0...@height] for x in [0...@width]
@@ -87,5 +115,5 @@ $ ->
 	context.fillRect 0, 0, WIDTH, HEIGHT
 
 	grid = new Grid
-	grid.step() for i in [1..5]
+	grid.stepUntilComplete()
 	grid.draw context
