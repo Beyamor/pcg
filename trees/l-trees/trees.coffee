@@ -70,9 +70,10 @@ $ ->
 	canvas.clearColor = 'white'
 
 	$('#go').click ->
-		axiom		= parseAxiom($('#axiom').val())
-		productions	= parseProductions($('#productions').val())
-		result		= applyProductions(axiom, productions, 2)
+		axiom			= parseAxiom($('#axiom').val())
+		productions		= parseProductions($('#productions').val())
+		numberOfTransforms	= parseInt($('#number-of-transformations').val())
+		result			= applyProductions(axiom, productions, numberOfTransforms)
 
 		turtle = new Turtle canvas
 		turtle.draw (instruction for instruction in result)
