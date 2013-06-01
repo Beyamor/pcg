@@ -25,6 +25,17 @@ class Canvas
 		@context.fillRect(0, 0, width, height)
 		@context.restore()
 
+	drawLine: ({start: start, end: end, width: width, color: color}) ->
+		[x1, y1] = start
+		[x2, y2] = end
+		color = "black" unless color?
+		@context.beginPath()
+		@context.moveTo(x1, y1)
+		@context.lineTo(x2, y2)
+		@context.lineWidth = width if width?
+		@context.strokeStyle = color if color?
+		@context.stroke()
+
 	clear: ->
 		@drawRect({x: 0, y: 0, width: @width, height: @height, color: @clearColor})
 
