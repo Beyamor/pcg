@@ -2,8 +2,8 @@ $ ->
 	class Turtle
 		constructor: (@canvas) ->
 			@state = {
-				x: 400
-				y: 300
+				x: 0
+				y: 0
 				direction: -90
 				previous: null
 			}
@@ -14,7 +14,7 @@ $ ->
 			nextY = @state.y + Math.sin(directionInRadians) * 10
 			return [nextX, nextY]
 
-		draw: (instructions) ->
+		draw: (camera, instructions) ->
 			@canvas.clear()
 
 			while instructions.length > 0
@@ -24,8 +24,8 @@ $ ->
 					when 'F'
 						[nextX, nextY] = @nextPos()
 						canvas.drawLine(
-							start: [@state.x, @state.y]
-							end: [nextX, nextY]
+							start: [@state.x - camera.x, @state.y - camera.y]
+							end: [nextX - camera.x, nextY - camera.y]
 							width: 2
 						)
 						@state.x = nextX
@@ -74,11 +74,21 @@ $ ->
 	canvas = new Canvas 'canvas'
 	canvas.clearColor = 'white'
 
-	$('#go').click ->
+	camera = null
+	resetCamera = ->
+		camera = {x: -canvas.width/2, y: -canvas.height/2}
+	resetCamera()
+
+	instructions = null
+	parseInstructions = ->
 		axiom			= parseAxiom($('#axiom').val())
 		productions		= parseProductions($('#productions').val())
 		numberOfTransforms	= parseInt($('#number-of-transformations').val())
-		result			= applyProductions(axiom, productions, numberOfTransforms)
+		instructions		= applyProductions(axiom, productions, numberOfTransforms)
+
+	$('#go').click ->
+		resetCamera()
+		parseInstructions()
 
 		turtle = new Turtle canvas
-		turtle.draw (instruction for instruction in result)
+		turtle.draw(camera, instructions)
