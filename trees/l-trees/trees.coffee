@@ -37,8 +37,13 @@ $ ->
 					when '-'
 						@state.direction += 90
 
+	parseAxiom = (axiomText) ->
+		(symbol for symbol in axiomText)
+
 	canvas = new Canvas 'canvas'
 	canvas.clearColor = 'white'
 
-	turtle = new Turtle canvas
-	turtle.draw (instruction for instruction in "FFF-FF-F-F+F+FF-F-FFF")
+	$('#go').click ->
+		axiom = parseAxiom($('#axiom').val())
+		turtle = new Turtle canvas
+		turtle.draw (instruction for instruction in axiom)
