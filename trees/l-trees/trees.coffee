@@ -31,6 +31,11 @@ $ ->
 						@state.x = nextX
 						@state.y = nextY
 
+					when 'f'
+						[nextX, nextY] = @nextPos()
+						@state.x = nextX
+						@state.y = nextY
+
 					when '+'
 						@state.direction -= 90
 
