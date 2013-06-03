@@ -19,13 +19,13 @@
 			<textarea id="productions" style="width:300px;height:200px;">F -&gt; F - F + F + FF - F - F + F</textarea><br/>
 
 			Number of transformations:<br/>
-			<select id="number-of-transformations">
-				<option value="0">0</option>
-				<option value="1">1</option>
-				<option value="2">2</option>
-				<option value="3">3</option>
-				<option value="4">4</option>
-			</select><br/>
+			<input id="number-of-transformations" type="range" min="0" max="4" value="2"/><br/>
+
+			Line length:<br/>
+			<input id="line-length" type="range" min="0" max="2" value="1" step="0.1"/><br/>
+
+			Angle increment:<br/>
+			<input id="angle-increment" type="range" min="20" max="90" value="90" step="5"/><br/>
 
 			<button id="go">go</button>
 		</div>

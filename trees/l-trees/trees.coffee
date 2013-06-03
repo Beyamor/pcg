@@ -1,6 +1,6 @@
 $ ->
 	class Turtle
-		constructor: (@canvas) ->
+		constructor: (@canvas, @params) ->
 			@state = {
 				x: 0
 				y: 0
@@ -10,8 +10,8 @@ $ ->
 
 		nextPos: ->
 			directionInRadians = @state.direction * Math.PI / 180
-			nextX = @state.x + Math.cos(directionInRadians) * 10
-			nextY = @state.y + Math.sin(directionInRadians) * 10
+			nextX = @state.x + Math.cos(directionInRadians) * @params.lineLength
+			nextY = @state.y + Math.sin(directionInRadians) * @params.lineLength
 			return [nextX, nextY]
 
 		draw: (camera, instructions) ->
@@ -37,10 +37,10 @@ $ ->
 						@state.y = nextY
 
 					when '+'
-						@state.direction -= 90
+						@state.direction -= @params.angleIncrement
 
 					when '-'
-						@state.direction += 90
+						@state.direction += @params.angleIncrement
 
 	parseAxiom = (axiomText) ->
 		(symbol for symbol in axiomText)
@@ -90,5 +90,10 @@ $ ->
 		resetCamera()
 		parseInstructions()
 
-		turtle = new Turtle canvas
+		params = {
+			lineLength: Math.pow(10, $('#line-length').val())
+			angleIncrement: parseInt($('#angle-increment').val())
+		}
+
+		turtle = new Turtle canvas, params
 		turtle.draw(camera, instructions)
