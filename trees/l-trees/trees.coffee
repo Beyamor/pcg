@@ -14,6 +14,19 @@ $ ->
 			nextY = @state.y + Math.sin(directionInRadians) * @params.lineLength
 			return [nextX, nextY]
 
+		pushState: ->
+			newState = {
+				x: @state.x
+				y: @state.y
+				direction: @state.direction
+				previous: @state
+			}
+
+			@state = newState
+
+		popState: ->
+			@state = @state.previous
+
 		draw: (camera, instructions) ->
 			@canvas.clear()
 
@@ -41,6 +54,12 @@ $ ->
 
 					when '-'
 						@state.direction += @params.angleIncrement
+
+					when '['
+						@pushState()
+
+					when ']'
+						@popState()
 
 	parseAxiom = (axiomText) ->
 		(symbol for symbol in axiomText)
