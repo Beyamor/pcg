@@ -132,12 +132,19 @@ window.onload = ->
 		[-5 + -35, -20]
 		[-5 + -30, -35]
 	]
-	armor = {
-		color: randomArmorColor()
-		head: headTemplate()
-		torso: torsoTemplate()
-		shoulder: shoulderTemplate()
-	}
+	
+	createArmor = (centerX, centerY) ->
 
-	transformArmor armor
-	drawArmor 300, 200, armor
+		armor = {
+			color: randomArmorColor()
+			head: headTemplate()
+			torso: torsoTemplate()
+			shoulder: shoulderTemplate()
+		}
+
+		transformArmor armor
+		drawArmor centerX, centerY, armor
+
+	for centerX in [100, 300, 500]
+		for centerY in [150, 450]
+			createArmor centerX, centerY
