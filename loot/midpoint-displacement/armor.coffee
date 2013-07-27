@@ -50,6 +50,7 @@ window.onload = ->
 	transformArmor = (armor) ->
 		armor.torso = displaceMidpoints 5, armor.torso
 		armor.shoulder = displaceMidpoints 5, armor.shoulder
+		armor.head = displaceMidpoints 5, armor.head
 
 		return armor
 
@@ -71,8 +72,24 @@ window.onload = ->
 		context.lineWidth = 3
 
 		drawVertices centerX, centerY, armor.torso
+		drawVertices centerX, centerY, armor.head
 		drawVertices centerX, centerY, armor.shoulder
-		
+
+	headTemplate = -> [
+		# chin
+		[30, -65],
+
+		# back
+		[-30, -90],
+		[-30, -115],
+
+		# top
+		[-25, -140],
+		[30, -140],
+
+		# front
+		[45, -105]
+	]
 	
 	torsoTemplate = -> [
 		# top
@@ -117,6 +134,7 @@ window.onload = ->
 	]
 	armor = {
 		color: randomArmorColor()
+		head: headTemplate()
 		torso: torsoTemplate()
 		shoulder: shoulderTemplate()
 	}
