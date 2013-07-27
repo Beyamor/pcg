@@ -4,14 +4,18 @@ window.onload = ->
 	
 	random = {
 		inRange: (min, max) -> min + Math.random() * (max - min)
+		intInRange: (min, max) -> Math.floor(random.inRange(min, max))
+		any: (xs) -> xs[random.intInRange(0, xs.length)]
+		choose: (choices...) -> random.any choices
 	}
 
 	randomArmorColor = ->
-		baseR = 75
-		baseG = 74
-		baseB = 77
+		[baseR, baseG, baseB] = random.choose(
+			[75, 74, 77],
+			[21, 21, 23]
+		)
 
-		baseScale = 0.95
+		baseScale = 0.9
 		randomScale = 1 - baseScale
 
 		randomR = random.inRange(0, 255)
@@ -44,25 +48,31 @@ window.onload = ->
 		return newVertices
 
 	transformArmor = (armor) ->
-		armor.vertices = displaceMidpoints 5, armor.vertices
+		armor.torso = displaceMidpoints 5, armor.torso
+		armor.shoulder = displaceMidpoints 5, armor.shoulder
 
 		return armor
+
+	drawVertices = (centerX, centerY, vertices) ->
+		context.beginPath()
+
+		[lastX, lastY] = vertices[vertices.length - 1]
+		context.moveTo centerX + lastX, centerY + lastY
+
+		for [x, y] in vertices
+			context.lineTo centerX + x, centerY + y
+
+		context.fill()
+		context.stroke()
 
 	drawArmor = (centerX, centerY, armor) ->
 		context.fillStyle = armor.color
 		context.styokeStyle = "black"
 		context.lineWidth = 3
 
-		context.beginPath()
-
-		[lastX, lastY] = armor.vertices[armor.vertices.length - 1]
-		context.moveTo centerX + lastX, centerY + lastY
-
-		for [x, y] in armor.vertices
-			context.lineTo centerX + x, centerY + y
-
-		context.fill()
-		context.stroke()
+		drawVertices centerX, centerY, armor.torso
+		drawVertices centerX, centerY, armor.shoulder
+		
 	
 	torsoTemplate = -> [
 		# top
@@ -85,9 +95,30 @@ window.onload = ->
 		[-35, -25]
 	]
 
+	# smaller, probably too small
+	#shoulderTemplate = -> [
+	#	[-15, -40],
+	#	[15, -40],
+	#	[25, -20],
+	#	[15, 10],
+	#	[-15, 10],
+	#	[-25, -20]
+	#]
+	
+	shoulderTemplate = -> [
+		[-5 + -20, -55],
+		[-5 + 20, -55],
+		[-5 + 30, -35],
+		[-5 + 35, -20],
+		[-5 + 20, 5],
+		[-5 + -20, 5],
+		[-5 + -35, -20]
+		[-5 + -30, -35]
+	]
 	armor = {
 		color: randomArmorColor()
-		vertices: torsoTemplate()
+		torso: torsoTemplate()
+		shoulder: shoulderTemplate()
 	}
 
 	transformArmor armor
