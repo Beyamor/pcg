@@ -24,8 +24,34 @@ window.onload = ->
 
 		return "rgb(#{r}, #{g}, #{b})"
 
+	displaceMidpoints = (h, vertices) ->
+		vertexPairs = []
+		for i in [0...vertices.length]
+			vertexPairs.push [vertices[i], vertices[(i+1) % vertices.length]]
+
+		newVertices = []
+		for [v1, v2] in vertexPairs
+			newVertices.push v1
+
+			[x1, y1] = v1
+			[x2, y2] = v2
+
+			x = (x1 + x2) / 2 + random.inRange(-h, h)
+			y = (y1 + y2) / 2 + random.inRange(-h, h)
+
+			newVertices.push [x, y]
+
+		return newVertices
+
+	transformArmor = (armor) ->
+		armor.vertices = displaceMidpoints 5, armor.vertices
+
+		return armor
+
 	drawArmor = (centerX, centerY, armor) ->
 		context.fillStyle = armor.color
+		context.styokeStyle = "black"
+
 		context.beginPath()
 
 		[lastX, lastY] = armor.vertices[armor.vertices.length - 1]
@@ -35,6 +61,7 @@ window.onload = ->
 			context.lineTo centerX + x, centerY + y
 
 		context.fill()
+		context.stroke()
 
 	armor = {
 		color: randomArmorColor()
@@ -44,8 +71,9 @@ window.onload = ->
 			[25, -50],
 
 			# chest
-			[40, -15],
-			[30, 25],
+			[40, -30],
+			[40, 0],
+			[30, 45],
 			[35, 100],
 
 			# bottom
@@ -53,8 +81,12 @@ window.onload = ->
 			[-40, 85],
 
 			# back
-			[-30, 40],
-			[-40, -25]
+			[-30, 30],
+			[-35, -10],
+			[-35, -25]
 		]
 	}
+
+	transformArmor armor
+
 	drawArmor 300, 200, armor
