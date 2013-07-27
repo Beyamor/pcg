@@ -63,31 +63,32 @@ window.onload = ->
 
 		context.fill()
 		context.stroke()
+	
+	torsoTemplate = -> [
+		# top
+		[-25, -50],
+		[25, -50],
+
+		# chest
+		[40, -30],
+		[40, 0],
+		[30, 45],
+		[35, 100],
+
+		# bottom
+		[0, 75],
+		[-40, 85],
+
+		# back
+		[-30, 30],
+		[-35, -10],
+		[-35, -25]
+	]
 
 	armor = {
-		color: 'white'
-		vertices: [
-			# top
-			[-25, -50],
-			[25, -50],
-
-			# chest
-			[40, -30],
-			[40, 0],
-			[30, 45],
-			[35, 100],
-
-			# bottom
-			[0, 75],
-			[-40, 85],
-
-			# back
-			[-30, 30],
-			[-35, -10],
-			[-35, -25]
-		]
+		color: randomArmorColor()
+		vertices: torsoTemplate()
 	}
 
-	armor.color = randomArmorColor()
 	transformArmor armor
 	drawArmor 300, 200, armor
