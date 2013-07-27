@@ -11,8 +11,8 @@ window.onload = ->
 		baseG = 74
 		baseB = 77
 
-		baseScale = 0.5
-		randomScale = 0.5
+		baseScale = 0.95
+		randomScale = 1 - baseScale
 
 		randomR = random.inRange(0, 255)
 		randomG = random.inRange(0, 255)
@@ -51,6 +51,7 @@ window.onload = ->
 	drawArmor = (centerX, centerY, armor) ->
 		context.fillStyle = armor.color
 		context.styokeStyle = "black"
+		context.lineWidth = 3
 
 		context.beginPath()
 
@@ -64,7 +65,7 @@ window.onload = ->
 		context.stroke()
 
 	armor = {
-		color: randomArmorColor()
+		color: 'white'
 		vertices: [
 			# top
 			[-25, -50],
@@ -87,6 +88,6 @@ window.onload = ->
 		]
 	}
 
+	armor.color = randomArmorColor()
 	transformArmor armor
-
 	drawArmor 300, 200, armor
