@@ -38,7 +38,8 @@ namespace "perl.planet", (ns) ->
 					angle = Math.atan2 y, x
 
 					heightThreshold = pixelRadius / 2
-					heightThreshold += noise.noise(angle*4, 0) * 10
+					heightThreshold += noise.noise(angle*2, 0) * 10
+					heightThreshold += noise.noise(angle*7, 0) * 5
 
 					type = if distance <= heightThreshold
 							"ground"
