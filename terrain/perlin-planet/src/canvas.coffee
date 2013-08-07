@@ -4,6 +4,12 @@ namespace "perl.canvas", (ns) ->
 			@el = $ "#{id}"
 			@context = @el[0].getContext "2d"
 
+		drawRect: ({x: x, y: y, width: width, height: height, color: color}) ->
+			@context.beginPath()
+			@context.rect x, y, width, height
+			@context.fillStyle = color
+			@context.fill()
+
 		clear: ->
 			@context.clearRect 0, 0, @width, @height
 
