@@ -27,7 +27,6 @@ namespace "perl.planet", (ns) ->
 		constructor: (@x, @y, pixelRadius) ->
 			@cells = []
 			
-			#noise = new perl.noise.Perlin2D 0.5, 6
 			noise = new SimplexNoise
 
 			gridWidth = gridHeight = Math.round(pixelRadius / CELL_WIDTH)
@@ -36,12 +35,12 @@ namespace "perl.planet", (ns) ->
 					x = gridX * CELL_WIDTH
 					y = gridY * CELL_WIDTH
 					distance = Math.sqrt(x*x + y*y)
+					angle = Math.atan2 y, x
 
-					solidness = 1 - distance / pixelRadius
-					n = noise.noise gridX/10, gridY/10
-					solidness += n * 0.125
+					heightThreshold = pixelRadius / 2
+					heightThreshold += noise.noise(angle*4, 0) * 10
 
-					type = if solidness > 0.5
+					type = if distance <= heightThreshold
 							"ground"
 						else
 							"air"
