@@ -145,6 +145,13 @@ window.onload = ->
 		transformArmor armor
 		drawArmor centerX, centerY, armor
 
-	for centerX in [100, 300, 500]
-		for centerY in [150, 450]
-			createArmor centerX, centerY
+	createArmors = ->
+		context.clearRect 0, 0, canvas.width, canvas.height
+		for centerX in [100, 300, 500]
+			for centerY in [150, 450]
+				createArmor centerX, centerY
+
+	createArmors()
+	document.onkeyup = (e) ->
+		if e.keyCode is 13
+			createArmors()
